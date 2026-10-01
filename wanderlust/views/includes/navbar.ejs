@@ -1,0 +1,55 @@
+<nav class="navbar navbar-expand-lg sf-navbar sticky-top">
+  <div class="container-xl sf-nav-inner">
+    <!-- Brand: Airbnb-style logo mark + wordmark -->
+    <a class="sf-brand" href="/listings" aria-label="StayFinder home">
+      <svg class="sf-logo" viewBox="0 0 32 34" aria-hidden="true" focusable="false">
+        <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 27.2c-2.6 3.1-4.7 4.6-7.1 4.6a5.1 5.1 0 0 1-4.6-7.3L13 5.4C13.7 4 14.8 3.2 16 3.2s2.3.8 3 2.2l8.7 19.1a5.1 5.1 0 0 1-4.6 7.3c-2.4 0-4.5-1.5-7.1-4.6z" />
+          <path d="M16 27.2c-3.1-3.7-4.7-6.6-4.7-8.8a4.7 4.7 0 0 1 9.4 0c0 2.2-1.6 5.1-4.7 8.8z" />
+        </g>
+      </svg>
+      <span class="sf-wordmark">StayFinder</span>
+    </a>
+
+    <button class="navbar-toggler sf-toggler" type="button" data-bs-toggle="collapse"
+      data-bs-target="#sfNav" aria-controls="sfNav" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="sfNav">
+      <!-- Search pill (centered) -->
+      <form class="sf-search mx-lg-auto" role="search" action="/listings/search" method="get" id="searchBox">
+        <i class="fa-solid fa-magnifying-glass sf-search-icon"></i>
+        <input class="sf-search-input" type="search" name="q" id="mySearchInput"
+          placeholder="Search by place, title or price" aria-label="Search listings"
+          value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" autocomplete="off" />
+        <button class="sf-search-btn" type="submit" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+
+      <!-- Right side: list property + auth -->
+      <div class="sf-actions ms-lg-auto">
+        <a class="btn sf-btn-primary" href="/listings/new"><i class="fa-solid fa-plus"></i> List your property</a>
+
+        <% if (!currUser) { %>
+          <a class="btn sf-btn-ghost" href="/login">Log in</a>
+          <a class="btn sf-btn-primary" href="/signup">Sign up</a>
+        <% } else { %>
+          <div class="dropdown">
+            <button class="sf-user-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="sf-avatar"><%= currUser.username.charAt(0).toUpperCase() %></span>
+              <span class="d-none d-xl-inline"><%= currUser.username %></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end sf-dropdown">
+              <li><h6 class="dropdown-header">Signed in as <b><%= currUser.username %></b></h6></li>
+              <li><a class="dropdown-item" href="/listings/new"><i class="fa-solid fa-circle-plus"></i> List your property</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item" href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log out</a></li>
+            </ul>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>

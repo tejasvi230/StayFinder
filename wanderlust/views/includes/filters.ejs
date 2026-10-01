@@ -1,0 +1,21 @@
+<%# Category slider. Pass `active` (a slug) to highlight the current filter. %>
+<div class="sf-filters" id="sfFilters">
+  <button class="sf-filter-arrow sf-filter-prev" type="button" aria-label="Scroll categories left" hidden>
+    <i class="fa-solid fa-chevron-left"></i>
+  </button>
+
+  <nav class="sf-filter-track" id="sfFilterTrack" aria-label="Browse by category">
+    <% for (const f of filters) { %>
+      <a class="sf-filter<%= active === f.slug ? " active" : "" %>"
+         href="/listings/filter/<%= f.slug %>"
+         <%- active === f.slug ? 'aria-current="page"' : "" %>>
+        <i class="fa-solid fa-<%= f.icon %>"></i>
+        <span><%= f.name %></span>
+      </a>
+    <% } %>
+  </nav>
+
+  <button class="sf-filter-arrow sf-filter-next" type="button" aria-label="Scroll categories right" hidden>
+    <i class="fa-solid fa-chevron-right"></i>
+  </button>
+</div>

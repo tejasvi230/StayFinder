@@ -1,0 +1,217 @@
+<% layout("/layouts/boilerplate") %>
+
+<%
+  const fallbackImg = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=60";
+  const isOwner = currUser && listing.owner && String(listing.owner._id) === String(currUser._id);
+  const stars = (rating) => {
+    const r = Math.round(rating || 0);
+    let html = "";
+    for (let i = 1; i <= 5; i++) {
+      html += `<i class="${i <= r ? "fa-solid" : "fa-regular"} fa-star sf-star"></i>`;
+    }
+    return html;
+  };
+%>
+
+<div class="row mt-4 mb-5">
+  <div class="col-lg-10 offset-lg-1">
+
+    <!-- Title -->
+    <h1 class="page-heading h2 mb-1"><%= listing.title %></h1>
+    <p class="listing-meta mb-3">
+      <% if (listing.reviews.length) { %>
+        <i class="fa-solid fa-star sf-star"></i> <b class="text-dark"><%= avgRating.toFixed(1) %></b>
+        · <%= listing.reviews.length %> review<%= listing.reviews.length === 1 ? "" : "s" %> ·
+      <% } %>
+      <i class="fa-solid fa-location-dot"></i> <%= listing.location %>, <%= listing.country %>
+    </p>
+
+    <!-- Hero image -->
+    <img src="<%= listing.image?.url || fallbackImg %>" class="show-hero" alt="<%= listing.title %>" />
+
+    <!-- Details -->
+    <section class="sf-section">
+      <h2 class="sf-h2">About this place</h2>
+      <ul class="sf-details">
+        <li>
+          <span class="sf-detail-label"><i class="fa-solid fa-user"></i> Hosted by</span>
+          <span class="sf-detail-value"><%= listing.owner ? listing.owner.username : "StayFinder host" %></span>
+        </li>
+        <li>
+          <span class="sf-detail-label"><i class="fa-solid fa-align-left"></i> Description</span>
+          <span class="sf-detail-value"><%= listing.description %></span>
+        </li>
+        <li>
+          <span class="sf-detail-label"><i class="fa-solid fa-indian-rupee-sign"></i> Cost</span>
+          <span class="sf-detail-value">
+            <% if (typeof listing.price === "number") { %>
+              <b>&#8377;<%= listing.price.toLocaleString("en-IN") %></b> / night
+            <% } else { %>
+              Price not available
+            <% } %>
+          </span>
+        </li>
+        <li>
+          <span class="sf-detail-label"><i class="fa-solid fa-tags"></i> Category</span>
+          <span class="sf-detail-value">
+            <% if (listing.categories && listing.categories.length) { %>
+              <% for (const cat of listing.categories) { %>
+                <a class="sf-chip" href="/listings/filter/<%= cat.replace(/&/g, "and").replace(/[\s\/]+/g, "-") %>"><%= cat %></a>
+              <% } %>
+            <% } else { %>
+              <span class="listing-meta">Not categorised</span>
+            <% } %>
+          </span>
+        </li>
+        <li>
+          <span class="sf-detail-label"><i class="fa-solid fa-location-dot"></i> Location</span>
+          <span class="sf-detail-value"><%= listing.location %></span>
+        </li>
+        <li>
+          <span class="sf-detail-label"><i class="fa-solid fa-earth-americas"></i> Country</span>
+          <span class="sf-detail-value"><%= listing.country %></span>
+        </li>
+      </ul>
+
+      <% if (isOwner) { %>
+        <div class="d-flex gap-2 mt-3">
+          <a href="/listings/<%= listing._id %>/edit" class="btn sf-btn-primary">Edit</a>
+          <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+            <button class="btn sf-btn-danger">Delete</button>
+          </form>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- Map -->
+    <section class="sf-section">
+      <h2 class="sf-h2">Where you'll be</h2>
+      <p class="listing-meta mb-3">
+        <i class="fa-solid fa-location-dot"></i> <%= listing.location %>, <%= listing.country %>
+      </p>
+      <% if (mapData) { %>
+        <div id="map" class="sf-map"></div>
+        <link href="https://api.mapbox.com/mapbox-gl-js/v3.28.1/mapbox-gl.css" rel="stylesheet" />
+        <script src="https://api.mapbox.com/mapbox-gl-js/v3.28.1/mapbox-gl.js"></script>
+        <script>
+          window.STAYFINDER_MAP = <%- JSON.stringify(mapData).replace(/</g, "\\u003c") %>;
+        </script>
+        <script src="/js/map.js"></script>
+      <% } else { %>
+        <div class="sf-map sf-map-empty">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <span>The map isn't available for this listing right now.</span>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- Amenities -->
+    <section class="sf-section">
+      <h2 class="sf-h2">What this place offers</h2>
+      <% if (!topAmenities.length) { %>
+        <p class="listing-meta">The host hasn't added amenities yet.</p>
+      <% } else { %>
+        <div class="row row-cols-1 row-cols-sm-2 g-3 mb-4">
+          <% for (const item of topAmenities) { %>
+            <div class="col">
+              <div class="sf-amenity"><i class="fa-solid fa-<%= item.icon %>"></i><span><%= item.label %></span></div>
+            </div>
+          <% } %>
+        </div>
+        <button type="button" class="btn sf-btn-primary" data-bs-toggle="modal" data-bs-target="#amenitiesModal">
+          Show all <%= totalAmenities %> amenities
+        </button>
+
+        <div class="modal fade" id="amenitiesModal" tabindex="-1" aria-labelledby="amenitiesModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content sf-modal">
+              <div class="modal-header border-0 pb-0">
+                <h2 class="modal-title h4 fw-bold" id="amenitiesModalLabel">What this place offers</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <% amenityGroups.forEach((group, index) => { %>
+                  <h3 class="sf-group-title <%= index === 0 ? "mt-2" : "" %>"><%= group.name %></h3>
+                  <ul class="sf-amenity-list">
+                    <% for (const item of group.items) { %>
+                      <li>
+                        <i class="fa-solid fa-<%= item.icon %>"></i>
+                        <div>
+                          <div><%= item.label %></div>
+                          <% if (item.note) { %><div class="listing-meta small"><%= item.note %></div><% } %>
+                        </div>
+                      </li>
+                    <% } %>
+                  </ul>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- Reviews -->
+    <section class="sf-section">
+      <h2 class="sf-h2">
+        Reviews
+        <% if (listing.reviews.length) { %>
+          <span class="listing-meta fs-6 fw-normal ms-2">
+            <i class="fa-solid fa-star sf-star"></i> <%= avgRating.toFixed(1) %> · <%= listing.reviews.length %>
+          </span>
+        <% } %>
+      </h2>
+
+      <% if (!listing.reviews.length) { %>
+        <p class="listing-meta">No reviews yet.</p>
+      <% } %>
+
+      <div class="row row-cols-1 row-cols-md-2 g-3 mb-4">
+        <% for (const review of listing.reviews) { %>
+          <div class="col">
+            <div class="sf-review">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="fa-solid fa-circle-user sf-review-user"></i>
+                <b><%= review.author?.username || "Anonymous" %></b>
+              </div>
+              <div class="mb-2" aria-label="Rated <%= review.rating %> out of 5">
+                <%- stars(review.rating) %>
+                <span class="listing-meta small ms-1"><%= review.rating %>/5</span>
+              </div>
+              <p class="mb-2"><%= review.comment %></p>
+
+              <% if (currUser && review.author && String(review.author._id) === String(currUser._id)) { %>
+                <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                  <button class="btn btn-sm sf-btn-ghost">Delete review</button>
+                </form>
+              <% } %>
+            </div>
+          </div>
+        <% } %>
+      </div>
+
+      <% if (currUser) { %>
+        <h3 class="h5 fw-bold">Leave a review</h3>
+        <form action="/listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation">
+          <div class="mb-3 mt-2">
+            <label class="form-label d-block">Rating</label>
+            <fieldset class="sf-star-input">
+              <% for (let i = 5; i >= 1; i--) { %>
+                <input type="radio" id="star<%= i %>" name="review[rating]" value="<%= i %>" <%= i === 5 ? "checked" : "" %> />
+                <label for="star<%= i %>" title="<%= i %> star<%= i === 1 ? "" : "s" %>"><i class="fa-solid fa-star"></i></label>
+              <% } %>
+            </fieldset>
+          </div>
+          <div class="mb-3">
+            <label for="comment" class="form-label">Comments</label>
+            <textarea name="review[comment]" id="comment" rows="4" class="form-control" required></textarea>
+            <div class="invalid-feedback">Please add a comment.</div>
+          </div>
+          <button class="btn sf-btn-primary">Submit review</button>
+        </form>
+      <% } else { %>
+        <p><a href="/login" class="link-dark fw-semibold">Log in</a> to leave a review.</p>
+      <% } %>
+    </section>
+  </div>
+</div>

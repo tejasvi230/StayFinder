@@ -1,0 +1,36 @@
+<%# Shared by new.ejs and edit.ejs. `listing` is null on the "new" form. %>
+<% const chosenCategories = new Set(listing ? listing.categories : []); %>
+<% const chosenAmenities = new Set(listing ? listing.amenities : []); %>
+
+<div class="mb-3">
+  <label class="form-label">Categories <span class="text-muted fw-normal">(choose all that fit - they decide which filters your listing shows up under)</span></label>
+  <div class="sf-category-picker">
+    <% for (const cat of categories) { %>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="listing[categories][]"
+          value="<%= cat %>" id="cat-<%= cat.replace(/[^a-z0-9]+/gi, "-") %>" <%= chosenCategories.has(cat) ? "checked" : "" %> />
+        <label class="form-check-label" for="cat-<%= cat.replace(/[^a-z0-9]+/gi, "-") %>"><%= cat %></label>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<div class="mb-3">
+  <label class="form-label">What this place offers</label>
+  <div class="sf-amenity-picker">
+    <% for (const group of amenityGroups) { %>
+      <div class="sf-picker-group">
+        <div class="sf-group-title"><%= group.name %></div>
+        <% for (const item of group.items) { %>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="listing[amenities][]"
+              value="<%= item.key %>" id="am-<%= item.key %>" <%= chosenAmenities.has(item.key) ? "checked" : "" %> />
+            <label class="form-check-label" for="am-<%= item.key %>">
+              <i class="fa-solid fa-<%= item.icon %>"></i> <%= item.label %>
+            </label>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+</div>

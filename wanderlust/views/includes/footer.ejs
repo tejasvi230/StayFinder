@@ -1,0 +1,61 @@
+<footer class="sf-footer">
+  <div class="container-xl">
+    <div class="row gy-4 sf-footer-top">
+      <div class="col-lg-4 col-md-6">
+        <a class="sf-brand mb-2" href="/listings">
+          <svg class="sf-logo" viewBox="0 0 32 34" aria-hidden="true" focusable="false">
+            <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 27.2c-2.6 3.1-4.7 4.6-7.1 4.6a5.1 5.1 0 0 1-4.6-7.3L13 5.4C13.7 4 14.8 3.2 16 3.2s2.3.8 3 2.2l8.7 19.1a5.1 5.1 0 0 1-4.6 7.3c-2.4 0-4.5-1.5-7.1-4.6z" />
+              <path d="M16 27.2c-3.1-3.7-4.7-6.6-4.7-8.8a4.7 4.7 0 0 1 9.4 0c0 2.2-1.6 5.1-4.7 8.8z" />
+            </g>
+          </svg>
+          <span class="sf-wordmark">StayFinder</span>
+        </a>
+        <p class="sf-footer-text">Find unique places to stay, or open your own doors to travellers from around the world.</p>
+        <div class="sf-socials">
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-6 offset-lg-2">
+        <h3 class="sf-footer-title">Explore</h3>
+        <ul class="sf-footer-links">
+          <li><a href="/listings">All stays</a></li>
+          <li><a href="/listings/search?q=beach">Beach stays</a></li>
+          <li><a href="/listings/search?q=mountain">Mountain stays</a></li>
+          <li><a href="/listings/search?q=city">City stays</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-2 col-6">
+        <h3 class="sf-footer-title">Hosting</h3>
+        <ul class="sf-footer-links">
+          <li><a href="/listings/new">List your property</a></li>
+          <li><a href="/signup">Become a host</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-2 col-6">
+        <h3 class="sf-footer-title">Account</h3>
+        <ul class="sf-footer-links">
+          <% if (!currUser) { %>
+            <li><a href="/login">Log in</a></li>
+            <li><a href="/signup">Sign up</a></li>
+          <% } else { %>
+            <li><a href="/logout">Log out</a></li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sf-footer-bottom">
+      <span>&copy; <%= new Date().getFullYear() %> StayFinder</span>
+      <span class="sf-footer-legal">
+        <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Sitemap</a><a href="#">Company details</a>
+      </span>
+    </div>
+  </div>
+</footer>
