@@ -4,19 +4,6 @@ An Airbnb-style vacation rental web app. Browse stays, search and filter them by
 
 Built with **Node.js, Express, MongoDB and EJS**.
 
-> **Live demo:** _add your deployed link here_
-
----
-
-## Screenshots
-
-_Add screenshots here (home page with the category slider, a listing page with the map and amenities, the amenities popup)._
-
-```md
-![Home page](docs/home.png)
-```
-
----
 
 ## Features
 
@@ -191,4 +178,3 @@ Set these in a file called `.env` in the project root. **Never commit this file.
 
 **Tejasvi** - Computer Science student, IGDTUW
 
-[GitHub](https://github.com/<your-username>) - [LinkedIn](https://www.linkedin.com/in/<your-handle>)
